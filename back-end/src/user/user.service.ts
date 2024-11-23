@@ -4,12 +4,16 @@ import { Model } from 'mongoose';
 import { SignUpInput } from 'src/auth/types';
 import { User } from './user.schema';
 import * as bcrypt from 'bcrypt';
+import { AddFavoriteDto } from './dto/add-favorite.dto';
+import { Activity } from '../activity/activity.schema';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
+    @InjectModel(Activity.name)
+    private readonly activityModel: Model<Activity>,
   ) {}
 
   async getByEmail(email: string): Promise<User> {
@@ -25,7 +29,7 @@ export class UserService {
   }
 
   async getById(id: string): Promise<User> {
-    const user = await this.userModel.findById(id).exec();
+    const user = await this.userModel.findById(id).populate('favorites').exec();
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -72,6 +76,31 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    return user;
+  }
+
+  async addFavorite(
+    userId: string,
+    addFavoriteDto: AddFavoriteDto,
+  ): Promise<User> {
+    const { activityId } = addFavoriteDto;
+
+    const activity = await this.activityModel.findById(activityId);
+    if (!activity) {
+      throw new NotFoundException('Activity not found');
+    }
+
+    const user = await this.userModel
+      .findByIdAndUpdate(
+        userId,
+        { $addToSet: { favorites: activityId } },
+        { new: true },
+      )
+      .populate('favorites');
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     return user;
   }
 }
