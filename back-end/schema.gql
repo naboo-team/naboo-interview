@@ -7,6 +7,7 @@ type Activity {
   createdAt: DateTime
   description: String!
   id: ID!
+  isFavorite: Boolean!
   name: String!
   owner: User!
   price: Int!
@@ -28,12 +29,20 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Favorite {
+  activity: Activity!
+  addedAt: DateTime!
+  id: ID!
+  user: User!
+}
+
 type Mutation {
-  addFavorite(addFavoriteDto: AddFavoriteDto!, userId: String!): User!
+  addFavorite(addFavoriteDto: AddFavoriteDto!, userId: String!): Favorite!
   createActivity(createActivityInput: CreateActivityInput!): Activity!
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
   register(signUpInput: SignUpInput!): User!
+  removeFavorite(activityId: String!, userId: String!): Boolean!
 }
 
 type Query {

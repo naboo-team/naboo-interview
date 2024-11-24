@@ -1,14 +1,7 @@
-import {
-  Resolver,
-  ResolveField,
-  Parent,
-  Mutation,
-  Args,
-} from '@nestjs/graphql';
-import { UserService } from './user.service';
+import { Resolver, ResolveField, Parent } from '@nestjs/graphql';
 import { Activity } from '../activity/activity.schema';
-import { User } from './user.schema';
-import { AddFavoriteDto } from './dto/add-favorite.dto';
+import { User } from '../user/user.schema';
+import { UserService } from '../user/user.service';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -17,15 +10,6 @@ export class UserResolver {
   @ResolveField(() => [Activity])
   async favorites(@Parent() user: User): Promise<Activity[]> {
     const populatedUser = await this.userService.getById(user.id);
-
     return populatedUser.favorites as unknown as Activity[];
-  }
-
-  @Mutation(() => User)
-  async addFavorite(
-    @Args('userId') userId: string,
-    @Args('addFavoriteDto') addFavoriteDto: AddFavoriteDto,
-  ): Promise<User> {
-    return this.userService.addFavorite(userId, addFavoriteDto);
   }
 }

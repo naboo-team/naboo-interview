@@ -12,18 +12,18 @@ import {
 import { UseGuards } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { UserService } from 'src/user/user.service';
 import { Activity } from './activity.schema';
 
 import { CreateActivityInput } from './activity.inputs.dto';
 import { User } from 'src/user/user.schema';
 import { ContextWithJWTPayload } from 'src/auth/types/context';
+import { FavoriteService } from '../favorite/favorite.service';
 
 @Resolver(() => Activity)
 export class ActivityResolver {
   constructor(
     private readonly activityService: ActivityService,
-    private readonly userServices: UserService,
+    private readonly favoriteService: FavoriteService,
   ) {}
 
   @ResolveField(() => ID)
@@ -82,5 +82,14 @@ export class ActivityResolver {
     @Args('createActivityInput') createActivity: CreateActivityInput,
   ): Promise<Activity> {
     return this.activityService.create(context.jwtPayload.id, createActivity);
+  }
+
+  @ResolveField(() => Boolean)
+  async isFavorite(
+    @Parent() activity: Activity,
+    @Context('user') user: User,
+  ): Promise<boolean> {
+    if (!user) return false;
+    return this.favoriteService.isFavorite(user.id, activity.id);
   }
 }
