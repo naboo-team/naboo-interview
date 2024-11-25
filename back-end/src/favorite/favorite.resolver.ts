@@ -22,4 +22,12 @@ export class FavoriteResolver {
   ): Promise<boolean> {
     return this.favoriteService.removeFavorite(userId, activityId);
   }
+
+  @Mutation(() => Favorite, { nullable: true })
+  async toggleFavorite(
+    @Args('userId') userId: string,
+    @Args('addFavoriteDto') addFavoriteDto: AddFavoriteDto,
+  ): Promise<Favorite | null> {
+    return this.favoriteService.toggleFavorite(userId, addFavoriteDto);
+  }
 }

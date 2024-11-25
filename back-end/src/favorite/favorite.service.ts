@@ -73,4 +73,24 @@ export class FavoriteService {
 
     return favorites.map((fav) => fav.user as User);
   }
+
+  async toggleFavorite(
+    userId: string,
+    addFavoriteDto: AddFavoriteDto,
+  ): Promise<Favorite | null> {
+    const { activityId } = addFavoriteDto;
+
+    const alreadyFavorite = await this.isFavorite(userId, activityId);
+
+    if (alreadyFavorite) {
+      await this.removeFavorite(userId, activityId);
+      return null;
+    }
+
+    const favorite = new this.favoriteModel({
+      user: userId,
+      activity: activityId,
+    });
+    return favorite.save();
+  }
 }
