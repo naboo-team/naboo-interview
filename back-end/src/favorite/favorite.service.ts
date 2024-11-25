@@ -1,6 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { isValidObjectId, Model } from 'mongoose';
 import { Favorite } from './favorite.schema';
 import { User } from '../user/user.schema';
 import { Activity } from '../activity/activity.schema';
@@ -26,6 +30,14 @@ export class FavoriteService {
     addFavoriteDto: AddFavoriteDto,
   ): Promise<Favorite> {
     const { activityId } = addFavoriteDto;
+
+    if (!isValidObjectId(userId)) {
+      throw new BadRequestException('Invalid user ID');
+    }
+
+    if (!isValidObjectId(activityId)) {
+      throw new BadRequestException('Invalid activity ID');
+    }
 
     const userExists = await this.userModel.exists({ _id: userId });
     if (!userExists) {

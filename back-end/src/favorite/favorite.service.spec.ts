@@ -6,6 +6,7 @@ import { User, UserSchema } from '../user/user.schema';
 import { Activity, ActivitySchema } from '../activity/activity.schema';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Connection, connect, Model } from 'mongoose';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('FavoriteService (Integration)', () => {
   let favoriteService: FavoriteService;
@@ -112,5 +113,166 @@ describe('FavoriteService (Integration)', () => {
       user._id.toString(),
     );
     expect(favorites).toHaveLength(0);
+  });
+
+  it('should toggle a favorite', async () => {
+    const user = await userModel.create({
+      email: 'test@test.com',
+      password: 'password',
+      firstName: 'John',
+      lastName: 'Doe',
+    });
+
+    const activity = await activityModel.create({
+      name: 'Test Activity',
+      description: 'A test activity',
+      price: 10,
+      owner: user._id,
+      city: 'Test City',
+    });
+
+    const resultAdd = await favoriteService.toggleFavorite(
+      user._id.toString(),
+      activity._id.toString(),
+    );
+    expect(resultAdd).toBe(true);
+
+    const favoritesAfterAdd = await favoriteService.getFavoritesByUser(
+      user._id.toString(),
+    );
+    expect(favoritesAfterAdd).toHaveLength(1);
+
+    const resultRemove = await favoriteService.toggleFavorite(
+      user._id.toString(),
+      activity._id.toString(),
+    );
+    expect(resultRemove).toBe(false);
+
+    const favoritesAfterRemove = await favoriteService.getFavoritesByUser(
+      user._id.toString(),
+    );
+    expect(favoritesAfterRemove).toHaveLength(0);
+  });
+
+  it('should check if an activity is a favorite', async () => {
+    const user = await userModel.create({
+      email: 'test@test.com',
+      password: 'password',
+      firstName: 'John',
+      lastName: 'Doe',
+    });
+
+    const activity = await activityModel.create({
+      name: 'Test Activity',
+      description: 'A test activity',
+      price: 10,
+      owner: user._id,
+      city: 'Test City',
+    });
+
+    const isFavoriteBefore = await favoriteService.isFavorite(
+      user._id.toString(),
+      activity._id.toString(),
+    );
+    expect(isFavoriteBefore).toBe(false);
+
+    await favoriteService.addFavorite(user._id.toString(), {
+      activityId: activity._id.toString(),
+    });
+
+    const isFavoriteAfter = await favoriteService.isFavorite(
+      user._id.toString(),
+      activity._id.toString(),
+    );
+    expect(isFavoriteAfter).toBe(true);
+  });
+
+  it('should throw a BadRequestException when adding a favorite with an invalid user ID', async () => {
+    const activity = await activityModel.create({
+      name: 'Test Activity',
+      description: 'A test activity',
+      price: 10,
+      owner: 'dummyOwnerId',
+      city: 'Test City',
+    });
+
+    await expect(
+      favoriteService.addFavorite('invalidUserId', {
+        activityId: activity._id.toString(),
+      }),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it('should throw a BadRequestException when adding a favorite with an invalid activity ID', async () => {
+    const user = await userModel.create({
+      email: 'test@test.com',
+      password: 'password',
+      firstName: 'John',
+      lastName: 'Doe',
+    });
+
+    await expect(
+      favoriteService.addFavorite(user._id.toString(), {
+        activityId: 'invalidActivityId',
+      }),
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it('should throw a NotFoundException when adding a favorite for a non-existent user', async () => {
+    const activity = await activityModel.create({
+      name: 'Test Activity',
+      description: 'A test activity',
+      price: 10,
+      owner: 'dummyOwnerId',
+      city: 'Test City',
+    });
+
+    await expect(
+      favoriteService.addFavorite('62f1c860df1234567890abcd', {
+        activityId: activity._id.toString(),
+      }),
+    ).rejects.toThrow(NotFoundException);
+  });
+
+  it('should throw a NotFoundException when adding a favorite for a non-existent activity', async () => {
+    const user = await userModel.create({
+      email: 'test@test.com',
+      password: 'password',
+      firstName: 'John',
+      lastName: 'Doe',
+    });
+
+    await expect(
+      favoriteService.addFavorite(user._id.toString(), {
+        activityId: '62f1c860df1234567890abcd',
+      }),
+    ).rejects.toThrow(NotFoundException);
+  });
+
+  it('should throw an error when adding a duplicate favorite', async () => {
+    const user = await userModel.create({
+      email: 'test@test.com',
+      password: 'password',
+      firstName: 'John',
+      lastName: 'Doe',
+    });
+
+    const activity = await activityModel.create({
+      name: 'Test Activity',
+      description: 'A test activity',
+      price: 10,
+      owner: user._id,
+      city: 'Test City',
+    });
+
+    await favoriteService.addFavorite(user._id.toString(), {
+      activityId: activity._id.toString(),
+    });
+
+    await expect(
+      favoriteService.addFavorite(user._id.toString(), {
+        activityId: activity._id.toString(),
+      }),
+    ).rejects.toThrow(Error);
   });
 });
