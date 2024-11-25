@@ -74,23 +74,41 @@ export class FavoriteService {
     return favorites.map((fav) => fav.user as User);
   }
 
-  async toggleFavorite(
-    userId: string,
-    addFavoriteDto: AddFavoriteDto,
-  ): Promise<Favorite | null> {
-    const { activityId } = addFavoriteDto;
+  async toggleFavorite(userId: string, activityId: string): Promise<boolean> {
+    const existingFavorite = await this.favoriteModel
+      .findOne({ user: userId, activity: activityId })
+      .exec();
 
-    const alreadyFavorite = await this.isFavorite(userId, activityId);
+    if (existingFavorite) {
+      // Supprimer l'entrée dans la collection "favorites"
+      const deleteResult = await this.favoriteModel.deleteOne({
+        _id: existingFavorite._id,
+      });
 
-    if (alreadyFavorite) {
-      await this.removeFavorite(userId, activityId);
-      return null;
+      const isDeleted = deleteResult.deletedCount === 1;
+      if (!isDeleted) {
+        throw new Error('Failed to remove favorite');
+      }
+
+      // Supprimer l'activité du tableau "favorites" de l'utilisateur
+      await this.userModel.findByIdAndUpdate(userId, {
+        $pull: { favorites: activityId },
+      });
+
+      return false; // L'activité n'est plus en favori
     }
 
-    const favorite = new this.favoriteModel({
+    // Ajouter une entrée dans la collection "favorites"
+    await this.favoriteModel.create({
       user: userId,
       activity: activityId,
     });
-    return favorite.save();
+
+    // Ajouter l'activité au tableau "favorites" de l'utilisateur
+    await this.userModel.findByIdAndUpdate(userId, {
+      $addToSet: { favorites: activityId },
+    });
+
+    return true; // L'activité est maintenant en favori
   }
 }

@@ -88,11 +88,31 @@ export class ActivityResolver {
   }
 
   @ResolveField(() => Boolean)
+  @UseGuards(AuthGuard)
   async isFavorite(
     @Parent() activity: Activity,
-    @Context('user') user: User,
+    @Context() context: ContextWithJWTPayload,
   ): Promise<boolean> {
-    if (!user) return false;
-    return this.favoriteService.isFavorite(user.id, activity.id);
+    if (!activity || !activity.id) {
+      console.error('Activity is not defined or missing an ID');
+      return false;
+    }
+
+    const userId = context.jwtPayload?.id;
+    if (!userId) {
+      console.error('No user in context');
+      return false;
+    }
+
+    const isFavorite = await this.favoriteService.isFavorite(
+      userId,
+      activity.id,
+    );
+    console.log(
+      `Activity ${activity.id} is favorite for user ${userId}:`,
+      isFavorite,
+    );
+
+    return isFavorite;
   }
 }

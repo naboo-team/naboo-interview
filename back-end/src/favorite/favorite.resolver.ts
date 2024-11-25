@@ -2,11 +2,14 @@ import { Resolver, Mutation, Args } from '@nestjs/graphql';
 import { FavoriteService } from './favorite.service';
 import { AddFavoriteDto } from './dto/add-favorite.dto';
 import { Favorite } from './favorite.schema';
+import { AuthGuard } from '../auth/auth.guard';
+import { UseGuards } from '@nestjs/common';
 
 @Resolver(() => Favorite)
 export class FavoriteResolver {
   constructor(private readonly favoriteService: FavoriteService) {}
 
+  @UseGuards(AuthGuard)
   @Mutation(() => Favorite)
   async addFavorite(
     @Args('userId') userId: string,
@@ -15,6 +18,7 @@ export class FavoriteResolver {
     return this.favoriteService.addFavorite(userId, addFavoriteDto);
   }
 
+  @UseGuards(AuthGuard)
   @Mutation(() => Boolean)
   async removeFavorite(
     @Args('userId') userId: string,
@@ -23,20 +27,12 @@ export class FavoriteResolver {
     return this.favoriteService.removeFavorite(userId, activityId);
   }
 
-  @Mutation(() => Favorite, { nullable: true })
+  @UseGuards(AuthGuard)
+  @Mutation(() => Boolean)
   async toggleFavorite(
     @Args('userId') userId: string,
-    @Args('addFavoriteDto') addFavoriteDto: AddFavoriteDto,
-  ): Promise<Favorite | null> {
-    const favorite = await this.favoriteService.toggleFavorite(
-      userId,
-      addFavoriteDto,
-    );
-    if (!favorite) {
-      return null;
-    }
-
-    await favorite.populate(['activity', 'user']);
-    return favorite;
+    @Args('activityId') activityId: string,
+  ): Promise<boolean> {
+    return this.favoriteService.toggleFavorite(userId, activityId);
   }
 }
