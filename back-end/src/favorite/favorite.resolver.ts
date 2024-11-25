@@ -28,6 +28,15 @@ export class FavoriteResolver {
     @Args('userId') userId: string,
     @Args('addFavoriteDto') addFavoriteDto: AddFavoriteDto,
   ): Promise<Favorite | null> {
-    return this.favoriteService.toggleFavorite(userId, addFavoriteDto);
+    const favorite = await this.favoriteService.toggleFavorite(
+      userId,
+      addFavoriteDto,
+    );
+    if (!favorite) {
+      return null;
+    }
+
+    await favorite.populate(['activity', 'user']);
+    return favorite;
   }
 }

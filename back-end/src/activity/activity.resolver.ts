@@ -28,6 +28,9 @@ export class ActivityResolver {
 
   @ResolveField(() => ID)
   id(@Parent() activity: Activity): string {
+    if (!activity._id) {
+      throw new Error('Activity ID is undefined.');
+    }
     return activity._id.toString();
   }
 
