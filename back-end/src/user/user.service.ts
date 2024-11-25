@@ -24,8 +24,11 @@ export class UserService {
     return this.userModel.findOne({ email: email }).exec();
   }
 
-  async getById(id: string): Promise<User> {
-    const user = await this.userModel.findById(id).populate('favorites').exec();
+  async getById(userId: string): Promise<User> {
+    const user = await this.userModel
+      .findById(userId)
+      .populate('favorites')
+      .exec();
     if (!user) {
       throw new NotFoundException('User not found');
     }
