@@ -80,7 +80,6 @@ export class FavoriteService {
       .exec();
 
     if (existingFavorite) {
-      // Supprimer l'entrée dans la collection "favorites"
       const deleteResult = await this.favoriteModel.deleteOne({
         _id: existingFavorite._id,
       });
@@ -90,25 +89,22 @@ export class FavoriteService {
         throw new Error('Failed to remove favorite');
       }
 
-      // Supprimer l'activité du tableau "favorites" de l'utilisateur
       await this.userModel.findByIdAndUpdate(userId, {
         $pull: { favorites: activityId },
       });
 
-      return false; // L'activité n'est plus en favori
+      return false;
     }
 
-    // Ajouter une entrée dans la collection "favorites"
     await this.favoriteModel.create({
       user: userId,
       activity: activityId,
     });
 
-    // Ajouter l'activité au tableau "favorites" de l'utilisateur
     await this.userModel.findByIdAndUpdate(userId, {
       $addToSet: { favorites: activityId },
     });
 
-    return true; // L'activité est maintenant en favori
+    return true;
   }
 }

@@ -52,6 +52,7 @@ type Query {
   getActivitiesByUser: [Activity!]!
   getActivity(id: String!): Activity!
   getCities: [String!]!
+  getFavoritesByUser: [Activity!]!
   getLatestActivities: [Activity!]!
   getMe: User!
 }

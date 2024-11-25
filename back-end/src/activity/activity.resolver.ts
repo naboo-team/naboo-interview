@@ -115,4 +115,12 @@ export class ActivityResolver {
 
     return isFavorite;
   }
+
+  @Query(() => [Activity])
+  @UseGuards(AuthGuard)
+  async getFavoritesByUser(
+    @Context() context: ContextWithJWTPayload,
+  ): Promise<Activity[]> {
+    return this.favoriteService.getFavoritesByUser(context.jwtPayload.id);
+  }
 }
