@@ -5,8 +5,8 @@ export const graphqlClient = new ApolloClient({
   link: new HttpLink({
     uri:
       typeof window === 'undefined'
-        ? process.env.GRAPH_QL_URL_SERVER
-        : process.env.GRAPH_QL_URL,
+        ? process.env.NEXT_PUBLIC_GRAPH_QL_URL_SERVER
+        : process.env.NEXT_PUBLIC_GRAPH_QL_URL,
     credentials: 'include',
   }),
   ssrMode: typeof window === 'undefined',
