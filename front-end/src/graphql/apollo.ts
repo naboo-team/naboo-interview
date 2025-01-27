@@ -1,10 +1,13 @@
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
 
 export const graphqlClient = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({
-    uri: "http://localhost:3000/graphql",
-    credentials: "include",
+    uri:
+      typeof window === 'undefined'
+        ? process.env.GRAPH_QL_URL_SERVER
+        : process.env.GRAPH_QL_URL,
+    credentials: 'include',
   }),
-  ssrMode: typeof window === "undefined",
+  ssrMode: typeof window === 'undefined',
 });

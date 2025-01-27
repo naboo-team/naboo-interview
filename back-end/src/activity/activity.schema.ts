@@ -6,6 +6,8 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 @ObjectType()
 @Schema({ timestamps: true })
 export class Activity extends Document {
+  _id!: mongoose.Types.ObjectId;
+
   @Field(() => ID)
   id!: string;
 

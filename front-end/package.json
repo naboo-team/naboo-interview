@@ -9,7 +9,9 @@
     "check": "tsc --noEmit",
     "lint": "next lint",
     "test": "vitest",
-    "generate-types": "cp ../back-end/schema.gql ./src/graphql/schema.gql && graphql-codegen"
+    "generate-types": "cp ../back-end/schema.gql ./src/graphql/schema.gql && graphql-codegen",
+    "docker:generate-types": "graphql-codegen --config codegen.docker.yml",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@apollo/client": "^3.8.8",
@@ -21,28 +23,17 @@
     "@mantine/next": "^6.0.16",
     "@tabler/icons-react": "^2.25.0",
     "axios": "^1.4.0",
-    "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
-    "next": "13.4.10",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "mongoose": "8.9.5",
+    "next": "^13.5.8"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^5.0.0",
-    "@graphql-codegen/typescript": "^4.0.1",
-    "@graphql-codegen/typescript-operations": "^4.0.1",
-    "@graphql-codegen/typescript-resolvers": "^4.0.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
-    "@types/node": "20.4.2",
-    "@types/react": "18.2.15",
-    "@types/react-dom": "18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
-    "eslint": "8.45.0",
     "eslint-config-next": "13.4.10",
     "jsdom": "^22.1.0",
-    "typescript": "5.1.6",
     "vitest": "^0.33.0"
   }
 }

@@ -28,7 +28,7 @@ export class SeedService {
         await Promise.all(
           activitiesData.map((activity) =>
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.activityService.create(user!._id, activity),
+            this.activityService.create(user!._id.toString(), activity),
           ),
         );
         Logger.log('Seeding successful!');

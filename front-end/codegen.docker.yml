@@ -1,0 +1,13 @@
+overwrite: true
+schema: "./src/graphql/schema.gql" # local scheme
+generates:
+  ./src/graphql/generated/types.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-resolvers
+    config:
+      gqlImport: "graphql-tag"
+
+documents:
+  - "./src/graphql/**/*.ts"
