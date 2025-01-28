@@ -31,6 +31,9 @@ export class User extends Document {
 
   @Prop()
   token?: string;
+
+  @Prop()
+  debugModeEnabled?: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { randomUUID } from 'crypto';
 import { BaseAppModule } from './app.module';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { TestModule, closeInMongodConnection } from './test/test.module';
 
 describe('App e2e', () => {
