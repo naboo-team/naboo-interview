@@ -67,12 +67,16 @@ export class ActivityResolver {
     @Args({ name: 'activity', nullable: true }) activity?: string,
     @Args({ name: 'price', nullable: true, type: () => Int }) price?: number,
   ): Promise<Activity[]> {
-    return this.activityService.findByCity(city, activity, price);
+    return this.activityService.findByCityAndPriceAndActivityName(
+      city,
+      activity,
+      price,
+    );
   }
 
   @Query(() => Activity)
   async getActivity(@Args('id') id: string): Promise<Activity> {
-    return this.activityService.findOne(id);
+    return this.activityService.findById(id);
   }
 
   @Mutation(() => Activity)

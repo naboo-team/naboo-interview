@@ -15,10 +15,15 @@ export class ActivityService {
     return this.activityModel.find().sort({ createdAt: -1 }).exec();
   }
 
-  async findLatest(): Promise<Activity[]> {
-    return this.activityModel.find().sort({ createdAt: -1 }).limit(3).exec();
+  async findLatest(limit: number = 3): Promise<Activity[]> {
+    return this.activityModel
+      .find()
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .exec();
   }
 
+  // TODO : check if user exist
   async findByUser(userId: string): Promise<Activity[]> {
     return this.activityModel
       .find({ owner: userId })
@@ -26,7 +31,7 @@ export class ActivityService {
       .exec();
   }
 
-  async findOne(id: string): Promise<Activity> {
+  async findById(id: string): Promise<Activity> {
     const activity = await this.activityModel.findById(id).exec();
     if (!activity) throw new NotFoundException();
     return activity;
@@ -36,6 +41,8 @@ export class ActivityService {
     return this.activityModel.find({ _id: { $in: ids } }).exec();
   }
 
+  //TODO : add verification if user is real for security
+  //TODO : add verification if connected user is the user ?
   async create(userId: string, data: CreateActivityInput): Promise<Activity> {
     const activity = await this.activityModel.create({
       ...data,
@@ -48,7 +55,7 @@ export class ActivityService {
     return this.activityModel.distinct('city').exec();
   }
 
-  async findByCity(
+  async findByCityAndPriceAndActivityName(
     city: string,
     activity?: string,
     price?: number,
