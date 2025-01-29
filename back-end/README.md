@@ -1,73 +1,55 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+### BACKEND
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+#### What's used
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+The backend is an [Nest.JS](https://docs.nestjs.com/) app
 
-## Description
+It uses : 
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- `mongodb`
+- `mongoose`
+- `data mapper pattern`
+- `graphql`
+- `jest` and `supertest`
+- `eslint` and `prettier`
 
-## Installation
+### Run project
 
-```bash
-$ yarn install
-```
+You should have run `npm install` at the root of the project and make sure you got a MongoDB up (for more please refer to [README.md](./../README.md) file at root)
 
-## Running the app
+You can run the app by using `npm run start`
 
-```bash
-# development
-$ yarn run start
+You can also run in watch mode by running  `npm run start:dev`
 
-# watch mode
-$ yarn run start:dev
+### Build
 
-# production mode
-$ yarn run start:prod
-```
+You can build it by running `npm run build`
 
-## Test
+Then you can run your app by using `npm run start:prod`
 
-```bash
-# unit tests
-$ yarn run test
+### Test
 
-# e2e tests
-$ yarn run test:e2e
+You can run all test suites by running `npm run test`
 
-# test coverage
-$ yarn run test:cov
-```
+##### Notes about tests
 
-## Support
+Few points that could be improved:
+- More reusability in tests
+- Testing the auth better
+- Factories or helpers for data creation
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Check, Lint, Format
 
-## Stay in touch
+You can check types with `npm run check`
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+You can format all files with `npm run format`
 
-## License
+You can lint all files with `npm run lint` 
 
-Nest is [MIT licensed](LICENSE).
+### Docker build
+
+Please refer to [README.md](./../README.md) at root for building docker images
+
+### More
+
+Optionally you got more npm scripts available in the [package.json](package.json) file

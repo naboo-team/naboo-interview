@@ -4,14 +4,17 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
-    "build": "next build",
     "start": "next start -p 3001",
+    "build": "next build",
+  
     "check": "tsc --noEmit",
     "lint": "next lint",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+
     "test": "vitest",
+
     "generate-types": "cp ../back-end/schema.gql ./src/graphql/schema.gql && graphql-codegen",
-    "docker:generate-types": "graphql-codegen --config codegen.docker.yml",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\""
+    "docker:generate-types": "graphql-codegen --config codegen.docker.yml"
   },
   "dependencies": {
     "@apollo/client": "^3.8.8",

@@ -44,7 +44,7 @@ COPY --from=back-builder /root/package.json ./package.json
 
 EXPOSE 3000
 
-CMD ["npm", "run", "back:start:prod"]
+CMD ["npm", "run", "start:back:prod"]
 
 FROM node:20.4.0-slim AS frontend
 
@@ -60,4 +60,4 @@ COPY --from=front-builder /root/package.json ./package.json
 COPY --from=front-builder /root/node_modules ./node_modules
 
 EXPOSE 3001
-CMD ["npm", "run", "front:start"]
+CMD ["npm", "run", "start:front"]

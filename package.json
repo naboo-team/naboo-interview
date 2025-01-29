@@ -4,29 +4,32 @@
   "version": "0.1.0",
   "description": "Naboo job interview",
   "scripts": {
+
     "format:all": "npm run format --workspaces --if-present",
     "lint:all": "npm run lint --workspaces --if-present",
+
     "format:front": "npm run format -w front-end",
+    "format:back": "npm run format -w back-end",
 
-    "start:front": "npm run dev -w front-end",
-    "start:back": "npm run start:dev -w back-end",
+    "lint:front": "npm run lint -w front-end",
+    "lint:back": "npm run lint -w back-end",
 
+    "start:front": "npm run start -w front-end",
+    "start:back": "npm run start -w back-end",
+    "start:back:prod" : "npm run start:prod -w back-end",
 
+    "dev:front": "npm run dev -w front-end",
+    "dev:back": "npm run start:dev -w back-end",
+
+    "back:build": "npm run build -w back-end",
+    "front:build": "npm run build -w front-end",
 
     "docker:start": "docker-compose up --build",
     "docker:stop": "docker-compose down",
     "docker:dev": "docker-compose up",
-
-    "front:build": "npm run build -w front-end",
+    
     "front:generate-types": "npm run generate-types -w front-end",
-    "front:docker:generate-types": "npm run docker:generate-types -w front-end",
-
-    "back:build": "npm run build -w back-end",
-    "back:start": "npm run start -w back-end",
-
-    "back:start:prod": "npm run start:prod -w back-end",
-    "front:start": "npm run start -w front-end"
-
+    "front:docker:generate-types": "npm run docker:generate-types -w front-end"
   },
   "author": "Stephane Thurneyssen",
   "workspaces": [
