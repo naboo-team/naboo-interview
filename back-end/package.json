@@ -9,6 +9,7 @@
     "build": "nest build",
     "check": "tsc --noEmit",
     "format": "prettier --write src/**/*.ts",
+    "format:test": "prettier --write src/**/*.spec.ts --write src/*.spec.ts",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

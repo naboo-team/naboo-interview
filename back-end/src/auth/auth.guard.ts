@@ -12,7 +12,7 @@ export class AuthGuard implements CanActivate {
     const gqlContext = GqlExecutionContext.create(context);
     const ctx = gqlContext.getContext();
 
-    if (!ctx.jwtPayload) throw new UnauthorizedException();
+    if (!ctx.jwtPayload) throw new UnauthorizedException('Invalid token');
 
     return true;
   }

@@ -259,6 +259,7 @@ describe('ActivityactivityService', () => {
     );
   });
 
+  // TODO : test is a bit flaky maybe due to query execution time ? To investigate
   it('should findLatest', async () => {
     // GIVEN
     const fakeId = new mongoose.Types.ObjectId().toString();
