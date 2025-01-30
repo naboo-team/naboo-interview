@@ -7,6 +7,9 @@ const GetUser = gql`
       firstName
       lastName
       email
+      favoriteActivities {
+        id
+      }
     }
   }
 `;

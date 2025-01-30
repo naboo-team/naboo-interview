@@ -21,6 +21,9 @@ import { createContext, useEffect, useState } from "react";
 
 interface AuthContextType {
   user: GetUserQuery["getMe"] | null;
+  setFavoriteActivities: (
+    favoriteActivities: GetUserQuery["getMe"]["favoriteActivities"],
+  ) => void;
   isLoading: boolean;
   handleSignin: (input: SignInInput) => Promise<void>;
   handleSignup: (input: SignUpInput) => Promise<void>;
@@ -29,6 +32,7 @@ interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
+  setFavoriteActivities: () => ({}),
   isLoading: false,
   handleSignin: () => Promise.resolve(),
   handleSignup: () => Promise.resolve(),
@@ -103,9 +107,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const setFavoriteActivities = (
+    activities: GetUserQuery["getMe"]["favoriteActivities"],
+  ) =>
+    setUser({
+      ...user,
+      favoriteActivities: activities,
+    } as GetUserQuery["getMe"]);
+
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, handleSignin, handleSignup, handleLogout }}
+      value={{
+        user,
+        isLoading,
+        handleSignin,
+        handleSignup,
+        handleLogout,
+        setFavoriteActivities,
+      }}
     >
       {children}
     </AuthContext.Provider>

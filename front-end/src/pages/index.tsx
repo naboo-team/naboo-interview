@@ -6,10 +6,19 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import {
+  AddFavoriteActivityMutation,
+  AddFavoriteActivityMutationVariables,
   GetLatestActivitiesQuery,
   GetLatestActivitiesQueryVariables,
+  RemoveFavoriteActivityMutation,
+  RemoveFavoriteActivityMutationVariables,
 } from "@/graphql/generated/types";
 import GetLatestActivities from "@/graphql/queries/activity/getLatestActivities";
+import { useAuth } from "@/hooks";
+import AddFavoriteActivity from "@/graphql/mutations/activity/addFavoriteActivity";
+import { useMutation } from "@apollo/client";
+import GetUser from "@/graphql/queries/auth/getUser";
+import RemoveFavoriteActivity from "@/graphql/mutations/activity/removeFavoriteActivity";
 
 interface HomeProps {
   activities: GetLatestActivitiesQuery["getLatestActivities"];
@@ -28,7 +37,39 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
 
 export default function Home({ activities }: HomeProps) {
   const { classes } = useGlobalStyles();
-
+  const { user, setFavoriteActivities } = useAuth();
+  const [addFavoriteActivity] = useMutation<
+    AddFavoriteActivityMutation,
+    AddFavoriteActivityMutationVariables
+  >(AddFavoriteActivity, {
+    refetchQueries: [GetUser],
+    update(
+      _cache,
+      {
+        data: {
+          addFavoriteActivity: { favoriteActivities },
+        },
+      },
+    ) {
+      setFavoriteActivities(favoriteActivities);
+    },
+  });
+  const [removeFavoriteActivity] = useMutation<
+    RemoveFavoriteActivityMutation,
+    RemoveFavoriteActivityMutationVariables
+  >(RemoveFavoriteActivity, {
+    refetchQueries: [GetUser],
+    update(
+      _cache,
+      {
+        data: {
+          removeFavoriteActivity: { favoriteActivities },
+        },
+      },
+    ) {
+      setFavoriteActivities(favoriteActivities);
+    },
+  });
   return (
     <>
       <Head>
@@ -72,7 +113,31 @@ export default function Home({ activities }: HomeProps) {
             </Flex>
             <Grid>
               {activities.map((activity) => (
-                <Activity activity={activity} key={activity.id} />
+                <Activity
+                  activity={activity}
+                  favorite={{
+                    isVisible: !!user,
+                    isFavorite: !!user?.favoriteActivities.find(
+                      (a) => a.id === activity.id,
+                    ),
+                    onChange: async (activityId, nextState) => {
+                      if (nextState) {
+                        addFavoriteActivity({
+                          variables: {
+                            addFavoriteActivityInput: { activityId },
+                          },
+                        });
+                      } else {
+                        removeFavoriteActivity({
+                          variables: {
+                            removeFavoriteActivityInput: { activityId },
+                          },
+                        });
+                      }
+                    },
+                  }}
+                  key={activity.id}
+                />
               ))}
             </Grid>
           </>
