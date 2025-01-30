@@ -14,12 +14,7 @@ import { ActivityService } from './activity.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UserService } from 'src/user/user.service';
 import { Activity } from './activity.schema';
-
-import {
-  CreateActivityInput,
-  AddFavoriteActivityInput,
-  RemoveFavoriteActivityInput,
-} from './activity.inputs.dto';
+import { CreateActivityInput } from './activity.inputs.dto';
 import { User } from 'src/user/user.schema';
 import { ContextWithJWTPayload } from 'src/auth/types/context';
 
@@ -41,6 +36,7 @@ export class ActivityResolver {
     return activity.owner;
   }
 
+  // TODO: find out why getLatestActivities doesn't resolve with this fn
   @ResolveField(() => Boolean)
   async isFavorite(
     @Parent() activity: Activity,
@@ -99,33 +95,5 @@ export class ActivityResolver {
     @Args('createActivityInput') createActivity: CreateActivityInput,
   ): Promise<Activity> {
     return this.activityService.create(context.jwtPayload.id, createActivity);
-  }
-
-  @Mutation(() => Activity)
-  @UseGuards(AuthGuard)
-  async addFavoriteActivity(
-    @Context() context: ContextWithJWTPayload,
-    @Args('addFavoriteActivityInput')
-    { activityId }: AddFavoriteActivityInput,
-  ): Promise<Activity> {
-    await this.userService.addFavoriteActivity(
-      context.jwtPayload.id,
-      activityId,
-    );
-    return this.activityService.findOne(activityId);
-  }
-
-  @Mutation(() => Activity)
-  @UseGuards(AuthGuard)
-  async removeFavoriteActivity(
-    @Context() context: ContextWithJWTPayload,
-    @Args('removeFavoriteActivityInput')
-    { activityId }: RemoveFavoriteActivityInput,
-  ): Promise<Activity> {
-    await this.userService.removeFavoriteActivity(
-      context.jwtPayload.id,
-      activityId,
-    );
-    return this.activityService.findOne(activityId);
   }
 }
