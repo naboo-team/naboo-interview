@@ -54,7 +54,10 @@ interface Props {
   onChange: (activityIds: string[]) => void;
 }
 
-export function SortableComponent({ activities, onChange }: Props) {
+export function SortableFavoriteActivitiesList({
+  activities,
+  onChange,
+}: Props) {
   const [items, setItems] = useState(activities || []);
   useEffect(() => {
     setItems(activities);

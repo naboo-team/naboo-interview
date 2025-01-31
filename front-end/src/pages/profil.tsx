@@ -3,7 +3,7 @@ import { withAuth } from "@/hocs";
 import { useAuth } from "@/hooks";
 import { Avatar, Box, Flex, Text } from "@mantine/core";
 import Head from "next/head";
-import { SortableComponent } from "@/components/Sortable";
+import { SortableFavoriteActivitiesList } from "@/components/SortableFavoriteActivitiesList";
 import {
   GetFavoriteActivitiesQuery,
   GetFavoriteActivitiesQueryVariables,
@@ -66,7 +66,7 @@ const Profile = () => {
       </Flex>
       <PageTitle title="Mes favoris" />
       <Box h={"500px"} mt="md">
-        <SortableComponent
+        <SortableFavoriteActivitiesList
           activities={data?.getMe.favoriteActivities || []}
           onChange={(activityIds) =>
             reorderFavoriteActivities({
