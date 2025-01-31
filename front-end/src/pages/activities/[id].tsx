@@ -6,6 +6,7 @@ import {
   GetActivityQueryVariables,
 } from "@/graphql/generated/types";
 import GetActivity from "@/graphql/queries/activity/getActivity";
+import { useAuth } from "@/hooks";
 import { Badge, Box, Flex, Grid, Group, Image, Text } from "@mantine/core";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
@@ -32,6 +33,7 @@ export const getServerSideProps: GetServerSideProps<
 
 export default function ActivityDetails({ activity }: ActivityDetailsProps) {
   const router = useRouter();
+  const { isAdmin } = useAuth();
 
   return (
     <>
@@ -65,6 +67,9 @@ export default function ActivityDetails({ activity }: ActivityDetailsProps) {
             <Text size="sm">{activity.description}</Text>
             <Text size="sm" color="dimmed">
               Ajouté par {activity.owner.firstName} {activity.owner.lastName}
+              {isAdmin() ? (
+                <span> le {new Date(activity.createdAt).toLocaleString()}</span>
+              ) : null}
             </Text>
           </Flex>
         </Grid.Col>

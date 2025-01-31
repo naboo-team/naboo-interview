@@ -15,11 +15,11 @@ import FavoriteActivityButton from "./FavoriteActivityButton";
 
 interface ActivityProps {
   activity: ActivityFragment;
+  isAdmin: boolean;
 }
 
-export function Activity({ activity }: ActivityProps) {
+export function Activity({ activity, isAdmin }: ActivityProps) {
   const { classes } = useGlobalStyles();
-
   return (
     <Grid.Col span={4}>
       <Card shadow="sm" padding="lg" radius="md" withBorder>
@@ -36,6 +36,12 @@ export function Activity({ activity }: ActivityProps) {
             {activity.name}
           </Text>
         </Group>
+
+        {isAdmin ? (
+          <Text size="sm" color="dimmed" className={classes.ellipsis}>
+            Ajouté le {new Date(activity.createdAt).toLocaleString()}
+          </Text>
+        ) : null}
 
         <Group mt="md" mb="xs">
           <Badge color="pink" variant="light">

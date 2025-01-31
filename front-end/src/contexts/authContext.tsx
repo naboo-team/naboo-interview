@@ -9,6 +9,7 @@ import {
   SigninMutationVariables,
   SignupMutation,
   SignupMutationVariables,
+  UserRole,
 } from "@/graphql/generated/types";
 import Logout from "@/graphql/mutations/auth/logout";
 import Signin from "@/graphql/mutations/auth/signin";
@@ -28,6 +29,7 @@ interface AuthContextType {
   handleSignin: (input: SignInInput) => Promise<void>;
   handleSignup: (input: SignUpInput) => Promise<void>;
   handleLogout: () => Promise<void>;
+  isAdmin: () => boolean;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -37,6 +39,7 @@ export const AuthContext = createContext<AuthContextType>({
   handleSignin: () => Promise.resolve(),
   handleSignup: () => Promise.resolve(),
   handleLogout: () => Promise.resolve(),
+  isAdmin: () => false,
 });
 
 interface AuthProviderProps {
@@ -73,6 +76,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const token = response.data?.login?.access_token || "";
       localStorage.setItem("token", token);
       await getUser().then((res) => setUser(res.data?.getMe || null));
+      window.__APOLLO_CLIENT__.cache.reset();
       router.push("/profil");
     } catch (err) {
       snackbar.error("Une erreur est survenue");
@@ -115,6 +119,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       favoriteActivities: activities,
     } as GetUserQuery["getMe"]);
 
+  const isAdmin = () => {
+    if (!user) {
+      return false;
+    }
+    return user.role === ("admin" as UserRole);
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -124,6 +135,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         handleSignup,
         handleLogout,
         setFavoriteActivities,
+        isAdmin,
       }}
     >
       {children}
