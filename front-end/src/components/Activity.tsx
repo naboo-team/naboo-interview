@@ -1,6 +1,15 @@
 import { ActivityFragment } from "@/graphql/generated/types";
 import { useGlobalStyles } from "@/utils";
-import { Badge, Button, Card, Grid, Group, Image, Text } from "@mantine/core";
+import {
+  Badge,
+  Box,
+  Button,
+  Card,
+  Grid,
+  Group,
+  Image,
+  Text,
+} from "@mantine/core";
 import Link from "next/link";
 import FavoriteActivityButton from "./FavoriteActivityButton";
 
@@ -26,7 +35,6 @@ export function Activity({ activity }: ActivityProps) {
           <Text weight={500} className={classes.ellipsis}>
             {activity.name}
           </Text>
-          <FavoriteActivityButton activityId={activity.id} />
         </Group>
 
         <Group mt="md" mb="xs">
@@ -36,6 +44,9 @@ export function Activity({ activity }: ActivityProps) {
           <Badge color="yellow" variant="light">
             {`${activity.price}€/j`}
           </Badge>
+          <Box ml={"auto"}>
+            <FavoriteActivityButton activityId={activity.id} />
+          </Box>
         </Group>
 
         <Text size="sm" color="dimmed" className={classes.ellipsis}>
