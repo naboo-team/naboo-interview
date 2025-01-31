@@ -80,4 +80,10 @@ type User {
   id: ID!
   lastName: String!
   password: String!
+  role: UserRole!
+}
+
+enum UserRole {
+  admin
+  user
 }

@@ -76,7 +76,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const token = response.data?.login?.access_token || "";
       localStorage.setItem("token", token);
       await getUser().then((res) => setUser(res.data?.getMe || null));
-      window.__APOLLO_CLIENT__.cache.reset();
       router.push("/profil");
     } catch (err) {
       snackbar.error("Une erreur est survenue");

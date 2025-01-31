@@ -1,9 +1,7 @@
 import { PageTitle } from "@/components";
-import { graphqlClient } from "@/graphql/apollo";
 import { withAuth } from "@/hocs";
 import { useAuth } from "@/hooks";
 import { Avatar, Box, Flex, Text } from "@mantine/core";
-import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { SortableComponent } from "@/components/Sortable";
 import {
@@ -13,44 +11,26 @@ import {
   ReorderFavoriteActivitiesMutationVariables,
 } from "@/graphql/generated/types";
 import GetFavoriteActivities from "@/graphql/queries/activity/getFavoriteActivities";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import ReorderFavoriteActivities from "@/graphql/mutations/activity/reorderFavoriteActivities";
-import { useState } from "react";
+import { useEffect } from "react";
 
-interface ProfileProps {
-  favoriteActivities: {
-    id: string;
-    name: string;
-  }[];
-}
+const Profile = () => {
+  const { user, setFavoriteActivities } = useAuth();
 
-export const getServerSideProps: GetServerSideProps<
-  ProfileProps
-> = async () => {
-  const response = await graphqlClient.query<
+  const { data, refetch } = useQuery<
     GetFavoriteActivitiesQuery,
     GetFavoriteActivitiesQueryVariables
-  >({
-    query: GetFavoriteActivities,
-  });
-
-  return {
-    props: {
-      favoriteActivities: response.data.getMe.favoriteActivities.map(
-        ({ id, name }) => ({ id, name }),
-      ),
-    },
-  };
-};
-
-const Profile = ({ favoriteActivities }: ProfileProps) => {
-  const { user, setFavoriteActivities } = useAuth();
-  const [activities, setActivities] = useState(favoriteActivities);
+  >(GetFavoriteActivities);
+  useEffect(() => {
+    refetch();
+  }, [user]);
 
   const [reorderFavoriteActivities] = useMutation<
     ReorderFavoriteActivitiesMutation,
     ReorderFavoriteActivitiesMutationVariables
   >(ReorderFavoriteActivities, {
+    refetchQueries: [GetFavoriteActivities],
     update(
       _cache,
       {
@@ -63,11 +43,10 @@ const Profile = ({ favoriteActivities }: ProfileProps) => {
         // TODO: error state
         return;
       }
-      console.log(activities);
       setFavoriteActivities(activities);
-      setActivities(activities.map(({ id, name }) => ({ id, name })));
     },
   });
+
   return (
     <>
       <Head>
@@ -88,7 +67,7 @@ const Profile = ({ favoriteActivities }: ProfileProps) => {
       <PageTitle title="Mes favoris" />
       <Box h={"500px"} mt="md">
         <SortableComponent
-          activities={activities}
+          activities={data?.getMe.favoriteActivities || []}
           onChange={(activityIds) =>
             reorderFavoriteActivities({
               variables: { reorderFavoriteActivitiesInput: { activityIds } },
