@@ -15,6 +15,7 @@ import { ContextWithJWTPayload } from 'src/auth/types/context';
 import {
   AddFavoriteActivityInput,
   RemoveFavoriteActivityInput,
+  ReorderFavoriteActivitiesInput,
 } from './user.inputs.dto';
 import { UserService } from './user.service';
 
@@ -53,6 +54,19 @@ export class UserResolver {
     return this.userService.removeFavoriteActivity(
       context.jwtPayload.id,
       activityId,
+    );
+  }
+
+  @Mutation(() => User)
+  @UseGuards(AuthGuard)
+  async reorderFavoriteActivities(
+    @Context() context: ContextWithJWTPayload,
+    @Args('reorderFavoriteActivitiesInput')
+    { activityIds }: ReorderFavoriteActivitiesInput,
+  ): Promise<User> {
+    return this.userService.setFavoriteActivities(
+      context.jwtPayload.id,
+      activityIds,
     );
   }
 }

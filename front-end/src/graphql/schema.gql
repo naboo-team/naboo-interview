@@ -36,6 +36,7 @@ type Mutation {
   logout: Boolean!
   register(signUpInput: SignUpInput!): User!
   removeFavoriteActivity(removeFavoriteActivityInput: RemoveFavoriteActivityInput!): User!
+  reorderFavoriteActivities(reorderFavoriteActivitiesInput: ReorderFavoriteActivitiesInput!): User!
 }
 
 type Query {
@@ -50,6 +51,10 @@ type Query {
 
 input RemoveFavoriteActivityInput {
   activityId: String!
+}
+
+input ReorderFavoriteActivitiesInput {
+  activityIds: [ID!]!
 }
 
 type SignInDto {

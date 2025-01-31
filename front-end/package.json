@@ -25,7 +25,8 @@
     "graphql-tag": "^2.12.6",
     "next": "13.4.10",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-sortable-hoc": "^2.0.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.0",
@@ -44,5 +45,11 @@
     "jsdom": "^22.1.0",
     "typescript": "5.1.6",
     "vitest": "^0.33.0"
+  },
+  "overrides": {
+    "react-sortable-hoc": {
+      "react": "^18.0",
+      "react-dom": "^18.0"
+    }
   }
 }

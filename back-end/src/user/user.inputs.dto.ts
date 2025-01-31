@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, ID, InputType } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
 
 @InputType()
@@ -13,4 +13,11 @@ export class RemoveFavoriteActivityInput {
   @Field()
   @IsNotEmpty()
   activityId!: string;
+}
+
+@InputType()
+export class ReorderFavoriteActivitiesInput {
+  @Field(() => [ID])
+  @IsNotEmpty()
+  activityIds!: string[];
 }
