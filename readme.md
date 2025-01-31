@@ -23,8 +23,12 @@ frontend
 
 backend
 
+- install docker compose plugin: https://docs.docker.com/compose/install/
+- copy `.env.example` to `.env`
+- make sure `MONGO_URI` and credentials in `docker-compose.yml` match
+
 ```bash
-npm i
+npm ci
 
 npm run start:dev
 ```
@@ -32,7 +36,7 @@ npm run start:dev
 frontend
 
 ```bash
-npm i
+npm ci
 
 npm run dev
 ```
