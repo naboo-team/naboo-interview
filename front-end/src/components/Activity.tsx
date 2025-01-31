@@ -1,28 +1,14 @@
 import { ActivityFragment } from "@/graphql/generated/types";
 import { useGlobalStyles } from "@/utils";
-import {
-  Badge,
-  Button,
-  Card,
-  Grid,
-  Group,
-  Image,
-  Text,
-  ActionIcon,
-} from "@mantine/core";
-import { IconStar } from "@tabler/icons-react";
+import { Badge, Button, Card, Grid, Group, Image, Text } from "@mantine/core";
 import Link from "next/link";
+import FavoriteActivityButton from "./FavoriteActivityButton";
 
 interface ActivityProps {
   activity: ActivityFragment;
-  favorite: {
-    isVisible: boolean;
-    isFavorite: boolean;
-    onChange: (activityId: string, nextState: boolean) => Promise<void>;
-  };
 }
 
-export function Activity({ activity, favorite }: ActivityProps) {
+export function Activity({ activity }: ActivityProps) {
   const { classes } = useGlobalStyles();
 
   return (
@@ -40,12 +26,7 @@ export function Activity({ activity, favorite }: ActivityProps) {
           <Text weight={500} className={classes.ellipsis}>
             {activity.name}
           </Text>
-          <ActionIcon
-            display={favorite.isVisible ? "inherit" : "none"}
-            onClick={() => favorite.onChange(activity.id, !favorite.isFavorite)}
-          >
-            <IconStar fill={favorite.isFavorite ? "yellow" : "none"} />
-          </ActionIcon>
+          <FavoriteActivityButton activityId={activity.id} />
         </Group>
 
         <Group mt="md" mb="xs">
