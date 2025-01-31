@@ -1,11 +1,13 @@
 import { PageTitle } from "@/components";
+import FavoriteActivityButton from "@/components/FavoriteActivityButton";
 import { graphqlClient } from "@/graphql/apollo";
 import {
   GetActivityQuery,
   GetActivityQueryVariables,
 } from "@/graphql/generated/types";
 import GetActivity from "@/graphql/queries/activity/getActivity";
-import { Badge, Flex, Grid, Group, Image, Text } from "@mantine/core";
+import { useAuth } from "@/hooks";
+import { Badge, Box, Flex, Grid, Group, Image, Text } from "@mantine/core";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -31,6 +33,7 @@ export const getServerSideProps: GetServerSideProps<
 
 export default function ActivityDetails({ activity }: ActivityDetailsProps) {
   const router = useRouter();
+  const { isAdmin } = useAuth();
 
   return (
     <>
@@ -57,10 +60,16 @@ export default function ActivityDetails({ activity }: ActivityDetailsProps) {
               <Badge color="yellow" variant="light">
                 {`${activity.price}€/j`}
               </Badge>
+              <Box ml={"auto"}>
+                <FavoriteActivityButton activityId={activity.id} />
+              </Box>
             </Group>
             <Text size="sm">{activity.description}</Text>
             <Text size="sm" color="dimmed">
               Ajouté par {activity.owner.firstName} {activity.owner.lastName}
+              {isAdmin() ? (
+                <span> le {new Date(activity.createdAt).toLocaleString()}</span>
+              ) : null}
             </Text>
           </Flex>
         </Grid.Col>

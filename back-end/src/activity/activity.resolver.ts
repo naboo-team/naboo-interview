@@ -14,7 +14,6 @@ import { ActivityService } from './activity.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { UserService } from 'src/user/user.service';
 import { Activity } from './activity.schema';
-
 import { CreateActivityInput } from './activity.inputs.dto';
 import { User } from 'src/user/user.schema';
 import { ContextWithJWTPayload } from 'src/auth/types/context';
@@ -23,7 +22,7 @@ import { ContextWithJWTPayload } from 'src/auth/types/context';
 export class ActivityResolver {
   constructor(
     private readonly activityService: ActivityService,
-    private readonly userServices: UserService,
+    private readonly userService: UserService,
   ) {}
 
   @ResolveField(() => ID)
@@ -35,6 +34,20 @@ export class ActivityResolver {
   async owner(@Parent() activity: Activity): Promise<User> {
     await activity.populate('owner');
     return activity.owner;
+  }
+
+  // TODO: find out why getLatestActivities doesn't resolve with this fn
+  @ResolveField(() => Boolean)
+  async isFavorite(
+    @Parent() activity: Activity,
+    @Context() context: ContextWithJWTPayload,
+  ): Promise<boolean> {
+    if (!context.jwtPayload) {
+      return false;
+    }
+    const currentUser = await this.userService.getById(context.jwtPayload.id);
+
+    return currentUser.favoriteActivityIds.includes(activity.id);
   }
 
   @Query(() => [Activity])

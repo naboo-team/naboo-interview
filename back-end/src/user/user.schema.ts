@@ -1,6 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Document, Types } from 'mongoose';
+import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Activity } from 'src/activity/activity.schema';
+
+export enum UserRole {
+  user = 'user',
+  admin = 'admin',
+}
+
+registerEnumType(UserRole, { name: 'UserRole' });
 
 @ObjectType()
 @Schema({ timestamps: true })
@@ -8,8 +16,9 @@ export class User extends Document {
   @Field(() => ID)
   id!: string;
 
+  @Field(() => UserRole)
   @Prop({ required: true, enum: ['user', 'admin'], default: 'user' })
-  role!: 'user' | 'admin';
+  role!: UserRole;
 
   @Field()
   @Prop({ required: true })
@@ -26,6 +35,16 @@ export class User extends Document {
   @Field()
   @Prop({ required: true })
   password!: string;
+
+  @Prop({
+    required: true,
+    // default: [],
+    type: [{ type: Types.ObjectId, ref: 'Activity' }],
+  })
+  favoriteActivityIds!: string[];
+
+  @Field(() => [Activity])
+  favoriteActivities!: Activity[];
 
   @Prop()
   token?: string;

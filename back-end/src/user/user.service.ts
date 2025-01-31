@@ -1,15 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { SignUpInput } from 'src/auth/types';
 import { User } from './user.schema';
 import * as bcrypt from 'bcrypt';
+import { Activity } from 'src/activity/activity.schema';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
+    @InjectModel(Activity.name)
+    private activityModel: Model<Activity>,
   ) {}
 
   async getByEmail(email: string): Promise<User> {
@@ -66,6 +73,68 @@ export class UserService {
       userId,
       {
         debugModeEnabled: enabled,
+      },
+      { new: true },
+    );
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
+  async addFavoriteActivity(userId: string, activityId: string): Promise<User> {
+    const activity = await this.activityModel.findById(activityId);
+    if (!activity) {
+      throw new NotFoundException('Activity not found');
+    }
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        $addToSet: { favoriteActivityIds: activityId },
+      },
+      { new: true },
+    );
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
+  async removeFavoriteActivity(
+    userId: string,
+    activityId: string,
+  ): Promise<User> {
+    const activity = await this.activityModel.findById(activityId);
+    if (!activity) {
+      throw new NotFoundException('Activity not found');
+    }
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        $pull: { favoriteActivityIds: activityId },
+      },
+      { new: true },
+    );
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
+  }
+
+  async setFavoriteActivities(
+    userId: string,
+    activityIds: string[],
+  ): Promise<User> {
+    const activities = await this.activityModel.find({
+      _id: { $in: activityIds },
+    });
+    if (activities.length !== activityIds.length) {
+      throw new BadRequestException("Activities don't match");
+    }
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        favoriteActivityIds: activityIds,
       },
       { new: true },
     );

@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps<
 };
 
 export default function Discover({ activities }: DiscoverProps) {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
 
   return (
     <>
@@ -46,7 +46,11 @@ export default function Discover({ activities }: DiscoverProps) {
       <Grid>
         {activities.length > 0 ? (
           activities.map((activity) => (
-            <Activity activity={activity} key={activity.id} />
+            <Activity
+              activity={activity}
+              isAdmin={isAdmin()}
+              key={activity.id}
+            />
           ))
         ) : (
           <EmptyData />

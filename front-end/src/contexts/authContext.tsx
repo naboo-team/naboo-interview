@@ -9,6 +9,7 @@ import {
   SigninMutationVariables,
   SignupMutation,
   SignupMutationVariables,
+  UserRole,
 } from "@/graphql/generated/types";
 import Logout from "@/graphql/mutations/auth/logout";
 import Signin from "@/graphql/mutations/auth/signin";
@@ -21,18 +22,24 @@ import { createContext, useEffect, useState } from "react";
 
 interface AuthContextType {
   user: GetUserQuery["getMe"] | null;
+  setFavoriteActivities: (
+    favoriteActivities: GetUserQuery["getMe"]["favoriteActivities"],
+  ) => void;
   isLoading: boolean;
   handleSignin: (input: SignInInput) => Promise<void>;
   handleSignup: (input: SignUpInput) => Promise<void>;
   handleLogout: () => Promise<void>;
+  isAdmin: () => boolean;
 }
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
+  setFavoriteActivities: () => ({}),
   isLoading: false,
   handleSignin: () => Promise.resolve(),
   handleSignup: () => Promise.resolve(),
   handleLogout: () => Promise.resolve(),
+  isAdmin: () => false,
 });
 
 interface AuthProviderProps {
@@ -103,9 +110,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const setFavoriteActivities = (
+    activities: GetUserQuery["getMe"]["favoriteActivities"],
+  ) =>
+    setUser({
+      ...user,
+      favoriteActivities: activities,
+    } as GetUserQuery["getMe"]);
+
+  const isAdmin = () => {
+    if (!user) {
+      return false;
+    }
+    return user.role === ("admin" as UserRole);
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, handleSignin, handleSignup, handleLogout }}
+      value={{
+        user,
+        isLoading,
+        handleSignin,
+        handleSignup,
+        handleLogout,
+        setFavoriteActivities,
+        isAdmin,
+      }}
     >
       {children}
     </AuthContext.Provider>

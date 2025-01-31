@@ -10,6 +10,7 @@ import {
   GetLatestActivitiesQueryVariables,
 } from "@/graphql/generated/types";
 import GetLatestActivities from "@/graphql/queries/activity/getLatestActivities";
+import { useAuth } from "@/hooks";
 
 interface HomeProps {
   activities: GetLatestActivitiesQuery["getLatestActivities"];
@@ -28,7 +29,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
 
 export default function Home({ activities }: HomeProps) {
   const { classes } = useGlobalStyles();
-
+  const { isAdmin } = useAuth();
   return (
     <>
       <Head>
@@ -72,7 +73,11 @@ export default function Home({ activities }: HomeProps) {
             </Flex>
             <Grid>
               {activities.map((activity) => (
-                <Activity activity={activity} key={activity.id} />
+                <Activity
+                  activity={activity}
+                  isAdmin={isAdmin()}
+                  key={activity.id}
+                />
               ))}
             </Grid>
           </>

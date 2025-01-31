@@ -1,15 +1,25 @@
 import { ActivityFragment } from "@/graphql/generated/types";
 import { useGlobalStyles } from "@/utils";
-import { Badge, Button, Card, Grid, Group, Image, Text } from "@mantine/core";
+import {
+  Badge,
+  Box,
+  Button,
+  Card,
+  Grid,
+  Group,
+  Image,
+  Text,
+} from "@mantine/core";
 import Link from "next/link";
+import FavoriteActivityButton from "./FavoriteActivityButton";
 
 interface ActivityProps {
   activity: ActivityFragment;
+  isAdmin: boolean;
 }
 
-export function Activity({ activity }: ActivityProps) {
+export function Activity({ activity, isAdmin }: ActivityProps) {
   const { classes } = useGlobalStyles();
-
   return (
     <Grid.Col span={4}>
       <Card shadow="sm" padding="lg" radius="md" withBorder>
@@ -27,6 +37,12 @@ export function Activity({ activity }: ActivityProps) {
           </Text>
         </Group>
 
+        {isAdmin ? (
+          <Text size="sm" color="dimmed" className={classes.ellipsis}>
+            Ajouté le {new Date(activity.createdAt).toLocaleString()}
+          </Text>
+        ) : null}
+
         <Group mt="md" mb="xs">
           <Badge color="pink" variant="light">
             {activity.city}
@@ -34,6 +50,9 @@ export function Activity({ activity }: ActivityProps) {
           <Badge color="yellow" variant="light">
             {`${activity.price}€/j`}
           </Badge>
+          <Box ml={"auto"}>
+            <FavoriteActivityButton activityId={activity.id} />
+          </Box>
         </Group>
 
         <Text size="sm" color="dimmed" className={classes.ellipsis}>
