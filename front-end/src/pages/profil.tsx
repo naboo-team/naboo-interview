@@ -64,7 +64,7 @@ const Profile = ({ favoriteActivities }: ProfileProps) => {
         return;
       }
       console.log(activities);
-      setFavoriteActivities(activities.map(({ id }) => id));
+      setFavoriteActivities(activities);
       setActivities(activities.map(({ id, name }) => ({ id, name })));
     },
   });

@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks";
 import { useMutation } from "@apollo/client";
 import { ActionIcon } from "@mantine/core";
 import { IconStar } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 
 interface FavoriteActivityButtonProps {
   activityId: string;
@@ -19,6 +20,11 @@ export default function FavoriteActivityButton({
   activityId,
 }: FavoriteActivityButtonProps) {
   const { user, setFavoriteActivities } = useAuth();
+  const [isFavorite, setIsFavorite] = useState(false);
+  useEffect(() => {
+    const nextVal = !!user?.favoriteActivities.find((a) => a.id === activityId);
+    setIsFavorite(nextVal);
+  }, [user]);
   const [addFavoriteActivity] = useMutation<
     AddFavoriteActivityMutation,
     AddFavoriteActivityMutationVariables
@@ -66,9 +72,6 @@ export default function FavoriteActivityButton({
       });
     }
   };
-  const isFavorite = !!user?.favoriteActivities.find(
-    (a) => a.id === activityId,
-  );
   return (
     <ActionIcon
       display={!!user ? "inherit" : "none"}

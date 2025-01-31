@@ -57,8 +57,8 @@ interface Props {
 export function SortableComponent({ activities, onChange }: Props) {
   const [items, setItems] = useState(activities || []);
   useEffect(() => {
-    onChange(items.map(({ id }) => id));
-  }, [items]);
+    setItems(activities);
+  }, [activities]);
 
   const onSortEnd = ({
     oldIndex,
@@ -67,7 +67,9 @@ export function SortableComponent({ activities, onChange }: Props) {
     oldIndex: number;
     newIndex: number;
   }) => {
-    setItems(arrayMove(items, oldIndex, newIndex));
+    const nextOrder = arrayMove(items, oldIndex, newIndex);
+    setItems(nextOrder);
+    onChange(nextOrder.map(({ id }) => id));
   };
 
   return <SortableList items={items} onSortEnd={onSortEnd} />;

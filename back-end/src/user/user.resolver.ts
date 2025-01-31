@@ -28,7 +28,15 @@ export class UserResolver {
 
   @ResolveField()
   async favoriteActivities(@Parent() user: User): Promise<Activity[]> {
-    return this.activityService.findByIds(user.favoriteActivityIds);
+    const activities = await this.activityService.findByIds(
+      user.favoriteActivityIds,
+    );
+    activities.sort(
+      (a, b) =>
+        user.favoriteActivityIds.indexOf(a.id) -
+        user.favoriteActivityIds.indexOf(b.id),
+    );
+    return activities;
   }
 
   @Mutation(() => User)
