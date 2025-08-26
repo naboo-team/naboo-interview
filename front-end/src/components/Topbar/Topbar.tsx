@@ -22,7 +22,7 @@ export function Topbar({ routes }: TopbarProps) {
       <Container>
         <div className={classes.inner}>
           <Link href="/" className={classes.mainLink}>
-            <h1 className={classes.title}>Candidator</h1>
+            <h1 className={classes.title} data-testid='header'>Candidator</h1>
           </Link>
           <Group spacing={5} className={classes.links}>
             {filteredRoutes.map((route) => (
